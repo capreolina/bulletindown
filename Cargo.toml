@@ -1,0 +1,33 @@
+[package]
+name = "bulletindown"
+version = "0.1.0"
+authors = ["deer <capreolina@protonmail.ch>"]
+edition = "2021"
+description = """Smol program to convert Markdown to BBCode, in XenForo or \
+ProBoards style"""
+repository = "https://codeberg.org/deer/bulletindown.git"
+readme = "README.md"
+keywords = ["markdown", "bbcode", "translator", "xenforo", "proboards"]
+categories = ["encoding"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+anyhow = "1.0.57"
+clap = { version = "3.1.18", features = ["derive", "unicode"] }
+html-escape = "0.2.11"
+
+[dependencies.pulldown-cmark]
+version = "0.9.1"
+default-features = false
+features = ["simd"]
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = "fat"
+debug-assertions = false
+codegen-units = 1
+panic = "abort"
+incremental = false
+overflow-checks = false

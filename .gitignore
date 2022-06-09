@@ -1,0 +1,9 @@
+# Rust stuff
+/target
+Cargo.lock
+
+# text editing stuff
+.vscode/
+.idea/
+*.swp
+*.bak
