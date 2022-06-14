@@ -8,38 +8,52 @@ pub struct Args {
         short,
         long,
         required = true,
-        arg_enum
+        arg_enum,
+        value_parser
     )]
     pub dialect: Dialect,
     #[clap(
         help = "A path to the input Markdown file. Defaults to stdin.",
         short,
-        long
+        long,
+        value_parser
     )]
     pub input: Option<String>,
     #[clap(
         help = "A path to the output BBCode file. Defaults to stdout.",
         short,
-        long
+        long,
+        value_parser
     )]
     pub output: Option<String>,
-    #[clap(help = "Enable non-CommonMark (GFM) table syntax.", short, long)]
+    #[clap(
+        help = "Enable non-CommonMark (GFM) table syntax.",
+        short,
+        long,
+        value_parser
+    )]
     pub tables: bool,
     #[clap(
         help = "Enable non-CommonMark (GFM) footnote syntax.",
         short,
-        long
+        long,
+        value_parser
     )]
     pub footnotes: bool,
     #[clap(
         help = "Enable non-CommonMark (GFM) strikethrough syntax.",
         short,
-        long
+        long,
+        value_parser
     )]
     pub strikethrough: bool,
-    #[clap(help = "Allow non-CommonMark (GFM) tasklist syntax.", long)]
+    #[clap(
+        help = "Allow non-CommonMark (GFM) tasklist syntax.",
+        long,
+        value_parser
+    )]
     pub tasklists: bool,
-    #[clap(help = "Enable “smart punctuation”.", long)]
+    #[clap(help = "Enable “smart punctuation”.", long, value_parser)]
     pub smart_punctuation: bool,
 }
 
