@@ -43,8 +43,12 @@ fn main() -> Result<()> {
     }
 
     // Perform the actual conversion.
-    let output_string =
-        convert::convert(input_string, args.dialect, markdown_opts)?;
+    let output_string = convert::convert(
+        input_string,
+        args.dialect,
+        args.encoding_warnings,
+        markdown_opts,
+    )?;
     let output_str = output_string.trim();
 
     // Write to the output file.

@@ -55,6 +55,17 @@ pub struct Args {
     pub tasklists: bool,
     #[clap(help = "Enable “smart punctuation”.", long, value_parser)]
     pub smart_punctuation: bool,
+    #[clap(
+        help = "Warn when emitting non-UCS2 characters in XenForo dialect.",
+        long_help = "Warn when emitting non-UCS2 characters (specifically, \
+any codepoints U+fffe or larger) in the XenForo dialect. Some XenForo \
+implementations will discard(!) these characters, leading to broken output. \
+Warnings are printed to stderr.",
+        short,
+        long,
+        value_parser
+    )]
+    pub encoding_warnings: bool,
 }
 
 #[derive(ArgEnum, Clone, Copy, PartialEq, Eq)]

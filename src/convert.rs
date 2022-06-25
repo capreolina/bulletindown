@@ -10,6 +10,7 @@ line";
 pub fn convert<S: AsRef<str>>(
     input: S,
     dialect: Dialect,
+    encoding_warnings: bool,
     markdown_opts: Options,
 ) -> Result<String> {
     let input = input.as_ref();
@@ -302,6 +303,23 @@ pub fn convert<S: AsRef<str>>(
                 });
                 output.push('\u{00a0}'); // NO-BREAK SPACE
             }
+        }
+    }
+
+    if encoding_warnings {
+        match dialect {
+            Dialect::Xenforo => {
+                for c in output.chars() {
+                    if c >= '\u{fffe}' {
+                        eprintln!(
+                            "[[WARN]] Non-UCS2 character in output: '{c}' \
+(U+{:x})",
+                            u32::from(c),
+                        );
+                    }
+                }
+            }
+            Dialect::Proboards => (),
         }
     }
 

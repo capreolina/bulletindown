@@ -1,6 +1,6 @@
 [package]
 name = "bulletindown"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["deer <capreolina@protonmail.ch>"]
 edition = "2021"
 description = """Smol program to convert Markdown to BBCode, in XenForo or \
@@ -12,8 +12,8 @@ categories = ["encoding"]
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-anyhow = "1.0.57"
-clap = { version = "3.2.2", features = ["derive", "unicode"] }
+anyhow = "1.0.58"
+clap = { version = "3.2.6", features = ["derive", "unicode"] }
 html-escape = "0.2.11"
 
 [dependencies.pulldown-cmark]
