@@ -22,20 +22,43 @@ USAGE:
     bulletindown [OPTIONS] --dialect <DIALECT>
 
 OPTIONS:
-    -d, --dialect <DIALECT>    The dialect/flavour of BBCode to emit. [possible
-                               values: xenforo, proboards]
-    -f, --footnotes            Enable non-CommonMark (GFM) footnote syntax.
-    -h, --help                 Print help information
-    -i, --input <INPUT>        A path to the input Markdown file. Defaults to
-                               stdin.
-    -o, --output <OUTPUT>      A path to the output BBCode file. Defaults to
-                               stdout.
-    -s, --strikethrough        Enable non-CommonMark (GFM) strikethrough
-                               syntax.
-        --smart-punctuation    Enable “smart punctuation”.
-    -t, --tables               Enable non-CommonMark (GFM) table syntax.
-        --tasklists            Allow non-CommonMark (GFM) tasklist syntax.
-    -V, --version              Print version information
+    -d, --dialect <DIALECT>
+            The dialect/flavour of BBCode to emit.
+
+            [possible values: xenforo, proboards]
+
+    -e, --encoding-warnings
+            Warn when emitting non-UCS2 characters (specifically, any
+            codepoints U+fffe or larger) in the XenForo dialect. Some XenForo
+            implementations will discard(!) these characters, leading to broken
+            output. Warnings are printed to stderr.
+
+    -f, --footnotes
+            Enable non-CommonMark (GFM) footnote syntax.
+
+    -h, --help
+            Print help information
+
+    -i, --input <INPUT>
+            A path to the input Markdown file. Defaults to stdin.
+
+    -o, --output <OUTPUT>
+            A path to the output BBCode file. Defaults to stdout.
+
+    -s, --strikethrough
+            Enable non-CommonMark (GFM) strikethrough syntax.
+
+        --smart-punctuation
+            Enable “smart punctuation”.
+
+    -t, --tables
+            Enable non-CommonMark (GFM) table syntax.
+
+        --tasklists
+            Allow non-CommonMark (GFM) tasklist syntax.
+
+    -V, --version
+            Print version information
 ```
 
 ## legal
