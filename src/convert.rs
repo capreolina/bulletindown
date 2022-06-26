@@ -212,68 +212,94 @@ pub fn convert<S: AsRef<str>>(
                     Dialect::Proboards => "[/tt]",
                 });
             }
-            Event::Html(s) => match s.as_ref().trim() {
-                // Some particular HTML elements have known translations:
-                "<del>" => output.push_str("[s]"),
-                "</del>" => output.push_str("[/s]"),
-                "<sup>" => output.push_str("[sup]"),
-                "</sup>" => output.push_str("[/sup]"),
-                "<sub>" => output.push_str("[sub]"),
-                "</sub>" => output.push_str("[/sub]"),
-                "<b>" => output.push_str("[b]"),
-                "</b>" => output.push_str("[/b]"),
-                "<i>" => output.push_str("[i]"),
-                "</i>" => output.push_str("[/i]"),
-                "<blockquote>" => output.push_str(match dialect {
-                    Dialect::Xenforo => "[quote]",
-                    Dialect::Proboards => "[blockquote]",
-                }),
-                "</blockquote>" => output.push_str(match dialect {
-                    Dialect::Xenforo => "[/quote]",
-                    Dialect::Proboards => "[/blockquote]",
-                }),
-                "<details>" => match dialect {
-                    Dialect::Xenforo => output.push_str("\n[spoiler="),
-                    // ProBoards doesn’t have details/spoiler elements AFAIK,
-                    // so we just skip it.
-                    Dialect::Proboards => (),
-                },
-                s_trimmed if s_trimmed.starts_with("<summary") => {
-                    match dialect {
-                        Dialect::Xenforo => {
-                            if !s_trimmed.ends_with("</summary>") {
-                                bail!(MULTILINE_SUMMARY);
-                            }
+            Event::Html(s) => {
+                match s.as_ref().trim() {
+                    // Some particular HTML elements have known translations:
+                    "<del>" => output.push_str("[s]"),
+                    "</del>" => output.push_str("[/s]"),
+                    "<sup>" => output.push_str("[sup]"),
+                    "</sup>" => output.push_str("[/sup]"),
+                    "<sub>" => output.push_str("[sub]"),
+                    "</sub>" => output.push_str("[/sub]"),
+                    "<b>" => output.push_str("[b]"),
+                    "</b>" => output.push_str("[/b]"),
+                    "<i>" => output.push_str("[i]"),
+                    "</i>" => output.push_str("[/i]"),
+                    "<blockquote>" => output.push_str(match dialect {
+                        Dialect::Xenforo => "[quote]",
+                        Dialect::Proboards => "[blockquote]",
+                    }),
+                    "</blockquote>" => output.push_str(match dialect {
+                        Dialect::Xenforo => "[/quote]",
+                        Dialect::Proboards => "[/blockquote]",
+                    }),
+                    "<details>" => match dialect {
+                        Dialect::Xenforo => output.push_str("\n[spoiler="),
+                        // ProBoards doesn’t have details/spoiler elements
+                        // AFAIK, so we just skip it.
+                        Dialect::Proboards => eprintln!(
+                            "[[WARN]] ProBoards doesn’t support `<details>`",
+                        ),
+                    },
+                    s_trimmed if s_trimmed.starts_with("<br") => {
+                        let mut is_br = true;
 
-                            decode_html_entities_to_string(
-                                &s_trimmed
-                                    .split(&['<', '>'][..])
-                                    .nth(2)
-                                    .ok_or_else(|| {
+                        if let Some(c) = s_trimmed.chars().nth(3) {
+                            if !c.is_whitespace() && c != '/' && c != '>' {
+                                is_br = false;
+                            } else {
+                                output.push('\n');
+                            }
+                        } else {
+                            is_br = false;
+                        }
+
+                        if !is_br {
+                            eprintln!(
+                                "[[WARN]] Unrecognised HTML tag: {s_trimmed}",
+                            );
+                            // Interpret it literally...
+                            output.push_str(&s);
+                        }
+                    }
+                    s_trimmed if s_trimmed.starts_with("<summary") => {
+                        match dialect {
+                            Dialect::Xenforo => {
+                                if !s_trimmed.ends_with("</summary>") {
+                                    bail!(MULTILINE_SUMMARY);
+                                }
+
+                                decode_html_entities_to_string(
+                                    &s_trimmed
+                                        .split(&['<', '>'][..])
+                                        .nth(2)
+                                        .ok_or_else(|| {
                                         anyhow!(MULTILINE_SUMMARY)
                                     })?,
-                                &mut output,
-                            );
-                            output.push(']');
+                                    &mut output,
+                                );
+                                output.push(']');
+                            }
+                            Dialect::Proboards => (),
                         }
+                    }
+                    "</details>" => match dialect {
+                        Dialect::Xenforo => output.push_str("[/spoiler]\n"),
                         Dialect::Proboards => (),
+                    },
+                    _ => {
+                        // Any HTML elements that start with `<!` are assumed
+                        // to be comments of some kind.
+                        if !s.starts_with("<!") {
+                            eprintln!("[[WARN]] Unrecognised HTML tag: {s}");
+                            // This isn’t a comment, so we assume that this
+                            // “HTML element” is not an HTML element at all,
+                            // and is meant to be interpreted literally!
+                            output.push_str(&s);
+                        }
                     }
                 }
-                "</details>" => match dialect {
-                    Dialect::Xenforo => output.push_str("[/spoiler]\n"),
-                    Dialect::Proboards => (),
-                },
-                _ => {
-                    // Any HTML elements that start with `<!` are assumed to be
-                    // comments.
-                    if !s.starts_with("<!") {
-                        // This isn’t a comment, so we assume that this “HTML
-                        // element” is not an HTML element at all, and is meant
-                        // to be interpreted literally!
-                        output.push_str(&s);
-                    }
-                }
-            },
+            }
             Event::FootnoteReference(fnid) => {
                 // We do our best to emulate a footnote marker...
                 match dialect {
@@ -313,7 +339,7 @@ pub fn convert<S: AsRef<str>>(
                     if c >= '\u{fffe}' {
                         eprintln!(
                             "[[WARN]] Non-UCS2 character in output: '{c}' \
-(U+{:x})",
+                             (U+{:x})",
                             u32::from(c),
                         );
                     }

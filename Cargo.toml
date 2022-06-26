@@ -1,6 +1,6 @@
 [package]
 name = "bulletindown"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["deer <capreolina@protonmail.ch>"]
 edition = "2021"
 description = """Smol program to convert Markdown to BBCode, in XenForo or \
