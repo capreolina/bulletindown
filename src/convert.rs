@@ -6,6 +6,8 @@ use pulldown_cmark::{Event, HeadingLevel, Options, Parser, Tag};
 static MULTILINE_SUMMARY: &str =
     "A `<summary>` element (including its contents) must be all on a single \
 line";
+static SINGLE_LINE_DETAILS: &str =
+    "`<details>` and `</details>` must occupy their own lines";
 
 pub fn convert<S: AsRef<str>>(
     input: S,
@@ -241,6 +243,9 @@ pub fn convert<S: AsRef<str>>(
                             "[[WARN]] ProBoards doesn’t support `<details>`",
                         ),
                     },
+                    s_trimmed if s_trimmed.starts_with("<details") => {
+                        bail!(SINGLE_LINE_DETAILS)
+                    }
                     s_trimmed if s_trimmed.starts_with("<br") => {
                         let mut is_br = true;
 
