@@ -338,7 +338,7 @@ pub fn convert<S: AsRef<str>>(
                 for c in output.chars() {
                     if c >= '\u{fffe}' {
                         eprintln!(
-                            "[[WARN]] Non-UCS2 character in output: '{c}' \
+                            "[[WARN]] Non-UCS-2 character in output: '{c}' \
                              (U+{:x})",
                             u32::from(c),
                         );

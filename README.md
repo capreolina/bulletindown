@@ -28,7 +28,7 @@ OPTIONS:
             [possible values: xenforo, proboards]
 
     -e, --encoding-warnings
-            Warn when emitting non-UCS2 characters (specifically, any
+            Warn when emitting non-UCS-2 characters (specifically, any
             codepoints U+fffe or larger) in the XenForo dialect. Some XenForo
             implementations will discard(!) these characters, leading to broken
             output. Warnings are printed to stderr.
